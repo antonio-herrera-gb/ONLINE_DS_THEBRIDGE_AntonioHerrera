@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
 import numpy as np
+import scipy.stats as stats
 
 
 def pinta_distribucion_categoricas(df, columnas_categoricas, relativa=False, mostrar_valores=False):
@@ -272,5 +273,36 @@ def bubble_plot(df, col_x, col_y, col_size, scale = 1000):
     plt.ylabel(col_y)
     plt.title(f'Burbujas de {col_x} vs {col_y} con Tamaño basado en {col_size}')
     plt.show()
+
+def chi2_test(dataframe, column1, column2):
+    """
+    Realiza una prueba de Chi-cuadrado para dos columnas categóricas en un DataFrame.
+
+    Args:
+    dataframe (pd.DataFrame): El DataFrame que contiene los datos.
+    column1 (str): El nombre de la primera columna categórica.
+    column2 (str): El nombre de la segunda columna categórica.
+
+    Returns:
+    dict: Un diccionario con el estadístico Chi2, el p-valor y los grados de libertad.
+    """
+    # Crear la tabla de contingencia
+    contingency_table = pd.crosstab(dataframe[column1], dataframe[column2])
+
+    # Realizar la prueba de Chi-cuadrado
+    chi2, p, dof, expected = stats.chi2_contingency(contingency_table)
+
+    # Devolver los resultados en un diccionario
+    result = {
+        'Estadístico Chi2': chi2,
+        'p-valor': p,
+        'Grados de libertad': dof
+    }
+
+    return result
+
+# Ejemplo de uso:
+# result = chi2_test(df_titanic, 'pclass', 'alive')
+# print(result)
 
 
